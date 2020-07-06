@@ -4,8 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server",
-    "server": "nodemon server"
+    "start": "node index",
+    "dev": "nodemon"
   },
   "repository": {
     "type": "git",
@@ -19,7 +19,9 @@
   "homepage": "https://github.com/sscarry2/assignment_Income-and-Expense-Recording#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
     "config": "^3.3.1",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-validator": "^6.6.0",
     "jsonwebtoken": "^8.5.1",
@@ -28,6 +30,14 @@
   },
   "devDependencies": {
     "concurrently": "^5.2.0",
-    "nodemon": "^2.0.4"
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5"
   }
 }

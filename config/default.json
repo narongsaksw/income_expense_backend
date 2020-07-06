@@ -1,0 +1,6 @@
+{
+    "mongo": {
+      "url": "mongodb+srv://narongsak15:narongsak15@income-expense.jhuiz.mongodb.net/<dbname>?retryWrites=true&w=majority",
+      "jwtSecret": "mysecrettoken"
+    }
+  }
