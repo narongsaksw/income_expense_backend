@@ -5,7 +5,7 @@ const mongoose = require('mongoose')
 const config = require('config')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const auth = require('../assignment-backend/middleware/auth')
+const auth = require('../assignment_backend/middleware/auth')
 const { check, validationResult } = require('express-validator')
 mongoose.Promise = global.Promise
 mongoose.connect(config.get('mongo.url'),{
@@ -37,6 +37,10 @@ const User = mongoose.model('User', new Schema({
   lastname: {
     type: String,
     required: true
+  },
+  role: {
+    type: String,
+    default: 'user'
   }
 }))
 
@@ -100,7 +104,7 @@ app.post('/users/login', [
         jwt.sign(
           payload, 
           config.get('mongo.jwtSecret'),
-          { expiresIn: 360000 }, 
+          { expiresIn: 86400 }, 
           (err, token) => {
             if(err) {
               console.error(err);
