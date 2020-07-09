@@ -48,7 +48,10 @@ const Transaction = mongoose.model('Transaction', new Schema({
   user: { type: ObjectId, ref: 'User' },
   amount: Number,
   type: String, // income, expense
-  remark: String,
+  remark: {
+    type: String,
+    default: '-'
+  },
   date: Date,
   // balance: Number,
 }))
@@ -60,7 +63,7 @@ app.use(bodyParser.json())
 
 app.get('/', (req, res) => res.send('hello'))
 
-app.get('/users/', auth,(req, res) => {
+app.get('/users', auth,(req, res) => {
   try{
     User.findById(req.user.id).select('-password')
     .then((data) => {
@@ -98,7 +101,8 @@ app.post('/users/login', [
         }
         const payload = {
           user: { 
-            id: user.id
+            id: user.id,
+            role: user.role
           }
         };
         jwt.sign(
@@ -184,10 +188,24 @@ async (req, res) => {
 });
 
 app.get('/transactions', (req, res) => {
-  Transaction.find({ user: req.query.user })
-    .then((data) => {
-      res.send(data)
-    })
+  const date1 = Date(req.query.date1)
+  const date2 = Date(req.query.date2)
+  if(req.query.type === '' && req.query.date1 !== req.query.date2){
+    Transaction.find({date: { $gte: date1 ,$lt: date2 }})
+      .then((data) => { res.send(data) })
+  }
+  else if(req.query.type !== '' && req.query.date1 !== req.query.date2){
+    Transaction.find({type: req.query.type },{date: { $gte: date1 ,$lt: date2 }})
+      .then((data) => { res.send(data) })
+  }
+  else if(req.query.type !== '' && req.query.date1 === req.query.date2){
+    Transaction.find({ type: req.query.type },{ date: date2 })
+      .then((data) => { res.send(data) })
+  }
+  else{
+    Transaction.find({ date: date2 })
+      .then((data) => { res.send(data) })
+  }
 })
 
 app.post('/transactions', (req, res) => {
