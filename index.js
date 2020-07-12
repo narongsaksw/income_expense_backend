@@ -5,7 +5,7 @@ const mongoose = require('mongoose')
 const config = require('config')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const auth = require('c:/cygwin64/home/Narongsak Suwan/assignment_backend/middleware/auth')
+const auth = require('../assignment_backend/middleware/auth')
 const { check, validationResult } = require('express-validator')
 mongoose.Promise = global.Promise
 mongoose.connect(config.get('mongo.url'),{
