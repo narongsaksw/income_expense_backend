@@ -11,7 +11,8 @@ mongoose.Promise = global.Promise
 mongoose.connect(config.get('mongo.url'),{
   useUnifiedTopology: true,
   useNewUrlParser: true,
-  useCreateIndex: true
+  useCreateIndex: true,
+  useFindAndModify: false
 })
 
 const { Schema } = mongoose
@@ -37,10 +38,6 @@ const User = mongoose.model('User', new Schema({
   lastname: {
     type: String,
     required: true
-  },
-  role: {
-    type: String,
-    default: 'user'
   }
 }))
 
@@ -188,24 +185,54 @@ async (req, res) => {
 });
 
 app.get('/transactions', (req, res) => {
-  const date1 = Date(req.query.date1)
-  const date2 = Date(req.query.date2)
+  const date1 = req.query.date1
+  const date2 = req.query.date2
+  const user_id = req.query.user
   if(req.query.type === '' && req.query.date1 !== req.query.date2){
-    Transaction.find({date: { $gte: date1 ,$lt: date2 }})
+    Transaction.find({
+      $and:[
+        {date: { $gte: date1 ,$lt: date2 }},
+        { user: user_id }
+        ]
+    }).lean()
       .then((data) => { res.send(data) })
   }
   else if(req.query.type !== '' && req.query.date1 !== req.query.date2){
-    Transaction.find({type: req.query.type },{date: { $gte: date1 ,$lt: date2 }})
+    Transaction.find({
+      $and:[
+        {type: req.query.type },
+        {date: { $gte: date1 ,$lt: date2 }},
+        { user: user_id }
+      ]
+    }).lean()
       .then((data) => { res.send(data) })
   }
   else if(req.query.type !== '' && req.query.date1 === req.query.date2){
-    Transaction.find({ type: req.query.type },{ date: date2 })
+    Transaction.find({ 
+      $and: [ 
+        { type: req.query.type },
+        { date: date2 }, 
+        { user: user_id } 
+      ] 
+    }).lean()
       .then((data) => { res.send(data) })
   }
   else{
-    Transaction.find({ date: date2 })
-      .then((data) => { res.send(data) })
+    Transaction.find({ 
+      $and: [ 
+        { date: date2 }, 
+        { user: user_id } 
+      ] 
+    }).lean()
+      .then((data) => { res.send(data) } )
   }
+})
+
+app.get('/transactions/:id', (req,res) => {
+  Transaction.find({ _id: req.params.id })
+    .then((data) => {
+      res.send(data)
+    })
 })
 
 app.post('/transactions', (req, res) => {
